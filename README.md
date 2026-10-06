@@ -184,7 +184,7 @@ Dashboard menyediakan beberapa perspektif analisis employee attrition:
 
 ### Dashboard Preview
 
-![HR Attrition Dashboard](dashboard/HR%20Attrition%20Dashboard.png)
+![HR Attrition Dashboard](Azzam Mujahid-dashboard/Azzam Mujahid-dashboard.png)
 
 ### Live Dashboard
 
