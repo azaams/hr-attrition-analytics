@@ -1,64 +1,335 @@
-# Proyek Akhir: Menyelesaikan Permasalahan Perusahaan Edutech
+# HR Employee Attrition Analysis & Prediction
 
-## Business Understanding
+Proyek analisis data HR end-to-end yang berfokus pada pemahaman pola **employee attrition**, identifikasi faktor yang berkaitan dengan turnover karyawan, pembangunan model prediksi attrition, serta penyajian insight melalui dashboard interaktif menggunakan Tableau.
 
-Jaya Jaya Maju adalah sebuah perusahaan berskala nasional yang bergerak di bidang *Edutech*. Walaupun terus berkembang pesat, perusahaan saat ini menghadapi permasalahan serius yaitu tingginya tingkat keluar masuk karyawan (*Attrition Rate*) yang mencapai lebih dari 16%. Fenomena ini merugikan perusahaan karena proses rekrutmen, orientasi, dan pelatihan karyawan baru memakan waktu serta anggaran yang sangat besar, yang pada akhirnya dapat menghambat pertumbuhan dan efisiensi operasional bisnis.
+## Project Overview
 
-### Permasalahan Bisnis
+Employee attrition dapat menimbulkan biaya operasional yang signifikan bagi perusahaan melalui proses rekrutmen, onboarding, dan pelatihan karyawan. Proyek ini menganalisis data karyawan untuk memahami pola attrition dan mengidentifikasi faktor-faktor yang berkaitan dengan karyawan yang meninggalkan perusahaan.
 
-Berdasarkan latar belakang di atas, permasalahan bisnis yang akan diselesaikan adalah:
-1. Apa saja faktor-faktor utama yang menyebabkan karyawan memutuskan untuk keluar (*resign*) dari perusahaan?
-2. Bagaimana cara memprediksi karyawan mana yang memiliki risiko tinggi untuk meninggalkan perusahaan di masa depan sehingga tindakan pencegahan dapat dilakukan lebih awal?
-3. Bagaimana menyajikan data faktor-faktor *attrition* ini ke dalam sebuah visualisasi yang mudah dipantau oleh manajer HR?
+Proyek ini mencakup:
 
-### Cakupan Proyek
-Cakupan proyek yang akan dikerjakan meliputi:
-1. **Data Pembersihan & Persiapan:** Menangani nilai kosong (*missing values*) pada target variabel dan menghapus fitur yang tidak relevan.
-2. **Exploratory Data Analysis (EDA):** Menganalisis distribusi data dan ketidakseimbangan kelas (*class imbalance*).
-3. **Membangun Model Machine Learning:** Membuat *Pipeline* klasifikasi menggunakan algoritma *Tree-based* (Random Forest dan Gradient Boosting) serta melakukan *Hyperparameter Tuning* dengan `GridSearchCV`.
-4. **Evaluasi Model & Ekstraksi Fitur:** Menggunakan metrik evaluasi yang kebal terhadap *imbalanced data* (ROC-AUC) dan mengekstrak *Feature Importance*.
-5. **Pembuatan Script Deployment:** Membangun berkas `prediction.py` untuk inferensi/prediksi data karyawan baru.
-6. **Pembuatan Business Dashboard:** Membangun *dashboard* interaktif untuk *monitoring* HR menggunakan Tableau.
+* Exploratory Data Analysis (EDA)
+* Data cleaning dan data preparation
+* Machine Learning classification
+* Model evaluation dan feature importance
+* Employee attrition prediction
+* Tableau Business Intelligence dashboard
 
-### Persiapan
+Tujuan akhir proyek adalah memberikan hasil analisis dan dashboard yang dapat membantu stakeholder HR dalam memantau serta memahami pola employee attrition.
 
-Sumber data: [Dataset Employee Jaya Jaya Maju (CSV)](https://raw.githubusercontent.com/dicodingacademy/dicoding_dataset/refs/heads/main/employee/employee_data.csv)
+## Business Questions
 
-Setup environment:
+Proyek ini berfokus pada tiga pertanyaan utama:
 
+1. Faktor apa saja yang paling berkaitan dengan employee attrition?
+2. Apakah employee attrition dapat diprediksi berdasarkan karakteristik karyawan yang tersedia?
+3. Bagaimana pola attrition dapat disajikan melalui dashboard interaktif untuk mendukung monitoring dan pengambilan keputusan HR?
+
+## Dataset
+
+Proyek ini menggunakan dataset **Employee Jaya Jaya Maju** yang disediakan oleh Dicoding.
+
+Dataset berisi informasi tingkat karyawan yang mencakup karakteristik demografis, kompensasi, pekerjaan, dan status pekerjaan.
+
+Dataset terdiri dari:
+
+* **1.470 records**
+* **35 columns**
+
+Variabel target `Attrition` tersedia untuk **1.058 records**, yang digunakan untuk analisis attrition dan predictive modeling.
+
+Sumber:
+
+[Employee Jaya Jaya Maju Dataset](https://raw.githubusercontent.com/dicodingacademy/dicoding_dataset/refs/heads/main/employee/employee_data.csv)
+
+## Project Workflow
+
+```text
+Raw Employee Data
+        │
+        ▼
+Data Cleaning & Preparation
+        │
+        ▼
+Exploratory Data Analysis
+        │
+        ├───────────────┐
+        ▼               ▼
+Attrition Analysis   Class Imbalance
+        │
+        ▼
+Machine Learning
+        │
+        ├── Random Forest
+        └── Gradient Boosting
+        │
+        ▼
+Hyperparameter Tuning
+        │
+        ▼
+Model Evaluation
+        │
+        ▼
+Feature Importance
+        │
+        ├───────────────┐
+        ▼               ▼
+Prediction Script   Tableau Dashboard
+        │               │
+        └───────┬───────┘
+                ▼
+        Business Insights
 ```
-# 1. Pastikan Anda memiliki Python 3.9 atau lebih baru.
-# 2. Instal semua library yang dibutuhkan menggunakan pip:
-pip install pandas numpy scikit-learn matplotlib seaborn joblib
 
-# 3. Menjalankan skrip prediksi (setelah model dilatih melalui notebook):
+## Data Preparation
+
+Tahapan data preparation yang dilakukan meliputi:
+
+* Menangani missing value pada variabel target.
+* Memisahkan data yang memiliki label `Attrition` dan data yang tidak memiliki label.
+* Menghapus fitur yang dianggap tidak relevan untuk analisis.
+* Mempersiapkan fitur numerik dan kategorikal untuk kebutuhan Machine Learning.
+* Menerapkan `StandardScaler` pada variabel numerik.
+* Menerapkan One-Hot Encoding pada variabel kategorikal.
+
+Kolom berikut dihapus pada tahap data preparation:
+
+* `EmployeeId`
+* `EmployeeCount`
+* `StandardHours`
+* `Over18`
+
+## Exploratory Data Analysis
+
+Exploratory Data Analysis (EDA) dilakukan untuk memahami:
+
+* Distribusi attrition
+* Class imbalance
+* Karakteristik demografis karyawan
+* Pola kompensasi
+* Pola overtime
+* Hubungan antara karakteristik karyawan dan attrition
+
+Analisis secara khusus mencakup beberapa faktor berikut:
+
+* Monthly Income
+* Age
+* Stock Option Level
+* OverTime
+* Job Role
+* Department
+* Gender
+
+## Machine Learning
+
+Dua algoritma klasifikasi berbasis tree dibandingkan dalam proyek ini:
+
+* Random Forest
+* Gradient Boosting
+
+Kedua model diimplementasikan menggunakan preprocessing pipeline dan dievaluasi menggunakan metrik yang sesuai untuk permasalahan klasifikasi dengan class imbalance.
+
+Hyperparameter tuning dilakukan menggunakan `GridSearchCV`.
+
+### Model Evaluation
+
+Gradient Boosting menghasilkan performa terbaik berdasarkan hasil evaluasi yang diperoleh:
+
+| Metric                   | Gradient Boosting |
+| ------------------------ | ----------------: |
+| Cross-Validation ROC-AUC |            0.7858 |
+| Test ROC-AUC             |            0.8046 |
+| Test PR-AUC              |            0.5737 |
+
+Model kemudian dipilih berdasarkan performa ROC-AUC.
+
+> Catatan: Performa model merepresentasikan kemampuan prediksi pada data pengujian yang tersedia dan tidak dapat diartikan sebagai bukti bahwa variabel yang teridentifikasi secara kausal menyebabkan employee attrition.
+
+## Feature Importance
+
+Model mengidentifikasi beberapa variabel sebagai fitur yang memiliki tingkat kepentingan tinggi dalam prediksi:
+
+1. `MonthlyIncome`
+2. `Age`
+3. `StockOptionLevel`
+4. `OverTime`
+
+Faktor-faktor tersebut kemudian menjadi bagian dari analisis bisnis dan dashboard.
+
+## Tableau Business Dashboard
+
+Dashboard interaktif dikembangkan menggunakan Tableau Public untuk membantu stakeholder HR memantau pola employee attrition.
+
+### Dashboard KPIs
+
+| KPI              |  Value |
+| ---------------- | -----: |
+| Total Employees  |  1,058 |
+| Active Employees |    879 |
+| Attrition Count  |    179 |
+| Attrition Rate   | 16.92% |
+| Average Age      |     37 |
+
+### Dashboard Analysis
+
+Dashboard menyediakan beberapa perspektif analisis employee attrition:
+
+* Job Role Attrition
+* Salary Gap by Role
+* OverTime Impact
+* Stock Option Impact
+* Attrition by Age
+* Attrition by Department
+* Attrition by Gender
+
+### Dashboard Preview
+
+![HR Attrition Dashboard](dashboard/HR%20Attrition%20Dashboard.png)
+
+### Live Dashboard
+
+[View Interactive Tableau Dashboard](https://public.tableau.com/app/profile/azzam.mujahid/viz/HRAttrition_17721994843030/Dashboard1)
+
+## Key Insights
+
+Analisis menghasilkan beberapa pola utama yang perlu diperhatikan.
+
+### 1. Attrition terjadi pada sebagian kecil dari total karyawan
+
+Dari 1.058 karyawan yang memiliki label `Attrition`, terdapat **179 karyawan yang mengalami attrition**, dengan attrition rate sebesar **16,92%**.
+
+### 2. Overtime berkaitan dengan tingkat attrition yang lebih tinggi
+
+Karyawan yang bekerja overtime menunjukkan tingkat attrition yang lebih tinggi dibandingkan karyawan yang tidak bekerja overtime.
+
+Oleh karena itu, overtime menjadi salah satu aspek yang penting untuk dimonitor dalam analisis employee retention.
+
+### 3. Kompensasi merupakan salah satu faktor penting dalam analisis
+
+`MonthlyIncome` merupakan salah satu fitur dengan tingkat importance yang tinggi dalam model prediksi.
+
+Analisis juga menunjukkan adanya perbedaan rata-rata MonthlyIncome antara karyawan yang mengalami attrition dan karyawan yang tetap bekerja.
+
+### 4. Age merupakan salah satu fitur penting
+
+`Age` termasuk salah satu fitur dengan tingkat importance yang tinggi dalam model prediksi. Dashboard juga memberikan perspektif tambahan mengenai distribusi attrition berdasarkan usia karyawan.
+
+### 5. Stock Option Level relevan dalam model prediksi
+
+`StockOptionLevel` juga termasuk dalam fitur dengan tingkat importance yang tinggi. Hal ini menjadikan employee benefits dan incentive program sebagai salah satu aspek yang relevan untuk dipertimbangkan dalam analisis retention.
+
+## Business Recommendations
+
+Berdasarkan pola yang ditemukan, beberapa area dapat menjadi pertimbangan bagi tim HR.
+
+### Review Overtime dan Workload
+
+Menganalisis distribusi workload dan pola overtime berdasarkan department dan job role. Karyawan dengan tingkat overtime yang konsisten tinggi dapat menjadi salah satu kelompok yang diprioritaskan untuk evaluasi workload dan retention.
+
+### Review Compensation
+
+Melakukan evaluasi terhadap perbedaan kompensasi antar job role dan kelompok karyawan, terutama pada kelompok yang menunjukkan tingkat attrition lebih tinggi dan tingkat income yang lebih rendah.
+
+### Evaluate Employee Benefits
+
+Mengevaluasi hubungan antara `StockOptionLevel` dan employee retention untuk memahami apakah program incentive yang diberikan sudah selaras dengan tujuan mempertahankan karyawan.
+
+### Strengthen Early Retention Programs
+
+Kelompok karyawan yang lebih muda atau kelompok lain yang menunjukkan pola attrition lebih tinggi dapat dipertimbangkan untuk mendapatkan program career development, mentorship, dan retention yang lebih terarah.
+
+Rekomendasi di atas didasarkan pada pola yang diamati dalam data dan feature importance dari model. Validasi lebih lanjut dengan konteks bisnis dan informasi HR diperlukan sebelum hasil tersebut digunakan sebagai dasar untuk menyimpulkan hubungan sebab-akibat atau menetapkan kebijakan.
+
+## Project Structure
+
+```text
+hr-attrition-analytics/
+│
+├── dashboard/
+│   └── HR Attrition Dashboard.png
+│
+├── notebook.ipynb
+├── prediction.py
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+## Tools & Technologies
+
+### Programming & Analysis
+
+* Python
+* Pandas
+* NumPy
+
+### Data Visualization
+
+* Matplotlib
+* Seaborn
+* Tableau Public
+
+### Machine Learning
+
+* Scikit-learn
+* Random Forest
+* Gradient Boosting
+* GridSearchCV
+* ROC-AUC
+* PR-AUC
+
+### Model Deployment / Inference
+
+* Joblib
+* Python prediction script
+
+## How to Run
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/azaams/hr-attrition-analytics.git
+cd hr-attrition-analytics
+```
+
+### 2. Install Dependencies
+
+Python 3.9 atau versi yang lebih baru direkomendasikan.
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run Analysis
+
+Buka file:
+
+```text
+notebook.ipynb
+```
+
+Kemudian jalankan notebook secara berurutan.
+
+### 4. Run Prediction Script
+
+Setelah model selesai dilatih:
+
+```bash
 python prediction.py
 ```
 
-## Business Dashboard
+## Repository
 
-Business Dashboard telah dibuat menggunakan Tableau Public untuk memudahkan Manajer HR dalam memantau persebaran attrition karyawan. Dashboard ini menampilkan rasio attrition secara keseluruhan dan menyoroti tiga faktor penyebab utama yang ditemukan oleh model Machine Learning, yaitu: perbandingan rata-rata Gaji Bulanan, distribusi Usia Karyawan, dan pengaruh Jam Lembur (OverTime).
+[GitHub Repository](https://github.com/azaams/hr-attrition-analytics)
 
-Tautan untuk mengakses dashboard tersebut: [Business Dashboard](https://public.tableau.com/app/profile/azzam.mujahid/viz/HRAttrition_17721994843030/Dashboard1?publish=yes)
+## Dashboard
 
-## Conclusion
+[Tableau Public — HR Attrition Dashboard](https://public.tableau.com/app/profile/azzam.mujahid/viz/HRAttrition_17721994843030/Dashboard1)
 
-Berdasarkan keseluruhan proyek yang dikerjakan, dapat ditarik kesimpulan sebagai berikut:
+## Author
 
-1. Model Prediksi: Algoritma Gradient Boosting Classifier terpilih sebagai model terbaik dengan skor evaluasi Cross-Validation ROC-AUC sebesar 0.7858 dan Test ROC-AUC sebesar 0.8046. Model ini sangat andal untuk digunakan perusahaan dalam memprediksi status karyawan.
+**Azzam Mujahid**
 
-2. Faktor Utama Attrition: Berdasarkan Feature Importance dari model, 4 faktor yang paling mendominasi keputusan karyawan untuk resign adalah Gaji Bulanan (MonthlyIncome), Usia (Age), Kepemilikan Opsi Saham (StockOptionLevel), dan Intensitas Lembur (OverTime).
+S1 Teknik Informatika
 
-3. Wawasan Visual: Dari dashboard terbukti bahwa karyawan yang disuruh lembur memiliki tingkat attrition yang sangat tinggi (mencapai ~32% atau 98 dari 307 karyawan) dibandingkan yang tidak lembur (~10%). Selain itu, rata-rata pendapatan bulanan karyawan yang keluar (~4.873) secara signifikan lebih rendah dari mereka yang bertahan (~6.983).
-
-### Rekomendasi Action Items (Optional)
-
-Berikan beberapa rekomendasi action items yang harus dilakukan perusahaan guna menyelesaikan permasalahan atau mencapai target mereka.
-
-1. Evaluasi dan Kurangi Jam Lembur: Departemen HR harus mengkaji ulang distribusi beban kerja. Mengurangi jam lembur (OverTime) sangat krusial karena data membuktikan lembur menjadi pemicu burnout dan tingginya angka resign.
-
-2. Penyesuaian Kompensasi Finansial: Lakukan riset pasar untuk menyesuaikan standar Gaji Bulanan (Monthly Income), terutama untuk level staf bawah, agar setidaknya mendekati rata-rata gaji karyawan yang bertahan.
-
-3. Pemberian Opsi Saham (Stock Option): Pertimbangkan untuk memberikan paket stock option atau bagi hasil kepada karyawan berprestasi untuk menumbuhkan rasa kepemilikan dan mengikat mereka secara jangka panjang.
-
-4. Program Retensi Karyawan Muda: Karena karyawan di usia muda (20-30 tahun) menunjukkan tingkat attrition terbanyak, buatlah program pengembangan karier atau mentorship khusus agar mereka melihat peluang masa depan yang jelas di perusahaan.
+Interested in Data Analytics and Data Science
